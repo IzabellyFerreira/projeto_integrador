@@ -1,0 +1,274 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Minha Sacola{% endblock title %}
+
+{% block css %}
+<style>
+    /* Aplica um estilo específico ao botão selecionado */
+    .btn-check:checked+.btn-outline-secondary {
+        border-color: black;
+        /* Borda preta para destacar a seleção */
+        border-width: 3px;
+        /* Aumenta a espessura da borda */
+    }
+
+    .active-thumbnail {
+        border-left: 2px solid #007bff;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        background-color: #007bff;
+        color: #000;
+        margin: 0 10px;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<!-- Product section-->
+<section class="mt-5 py-5">
+    <div class="container px-4 px-lg-5 my-5 pt-5">
+        <div class="row gx-4 gx-lg-5 align-items-start">
+            <div class="col-lg-6 d-flex flex-column-reverse flex-lg-row gap-3 gap-lg-5 pb-5 pb-lg-0">
+                <div class="col-lg-2">
+                    <div class="d-flex flex-row flex-lg-column justify-content-center justify-content-lg-start gap-2">
+                        <!-- Imagens menores -->
+                        <img class="img-fluid small-image" src="https://placehold.co/50?text=1" alt="Imagem 1"
+                            data-index="0" />
+                        <img class="img-fluid small-image" src="https://placehold.co/50?text=2" alt="Imagem 2"
+                            data-index="1" />
+                        <img class="img-fluid small-image" src="https://placehold.co/50?text=3" alt="Imagem 3"
+                            data-index="2" />
+                        <img class="img-fluid small-image" src="https://placehold.co/50?text=4" alt="Imagem 4"
+                            data-index="3" />
+                        <img class="img-fluid small-image" src="https://placehold.co/50?text=5" alt="Imagem 5"
+                            data-index="4" />
+                    </div>
+                </div>
+                <div class="col-lg-10">
+                    <!-- Imagem principal com controles -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="badge bg-danger">Lançamento</span>
+                        <div class="text-warning border border-danger p-2 rounded-pill">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="position-relative">
+                        <img class="card-img-top mb-2 mb-md-0 main-image" src="https://placehold.co/500x600?text=1"
+                            alt="Imagem Principal" />
+                        <button
+                            class="btn btn-primary position-absolute top-50 start-0 translate-middle-y carousel-control-prev"
+                            style="z-index: 10; border-radius: 50%; width: 40px; height: 40px;">&#10094;</button>
+                        <button
+                            class="btn btn-primary position-absolute top-50 end-0 translate-middle-y carousel-control-next"
+                            style="z-index: 10; border-radius: 50%; width: 40px; height: 40px;">&#10095;</button>
+                    </div>
+                </div>
+                <p class="lead d-block d-lg-none">MAKE B.</p>
+                <div class="d-flex justify-content-between d-block d-lg-none">
+                    <h1 class="display-6 fw-bolder">Batom Líquido Rosa French Rose Make B. One Velvet Sublime 2g
+                    </h1>
+                    <i class="far fa-heart align-self-start fs-4"></i>
+                </div>
+            </div>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-5">
+                <!-- Informações adicionais -->
+                <div class="d-flex justify-content-between d-none d-lg-block">
+                    <h1 class="fw-bolder">Batom Líquido Rosa French Rose Make B. One Velvet Sublime 2g</h1>
+                    <i class="far fa-heart align-self-start fs-4"></i>
+                </div>
+                <p class="lead d-none d-lg-block">MAKE B.</p>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label">Escolha uma cor:</label>
+                        <div class="d-flex gap-2 border p-3" style="width: auto !important;">
+                            <!-- Botões de cor -->
+                            <input type="radio" class="btn-check" name="productColor" id="colorRed" autocomplete="off"
+                                value="#ff0000" checked>
+                            <label class="btn btn-outline-secondary border-2" for="colorRed"
+                                style="background-color: #ec7676; width: 40px; height: 40px; border-radius: 8px;"></label>
+                            <input type="radio" class="btn-check" name="productColor" id="colorBlue" autocomplete="off"
+                                value="#0000ff">
+                            <label class="btn btn-outline-secondary border-2" for="colorBlue"
+                                style="background-color: #6767e2; width: 40px; height: 40px; border-radius: 8px;"></label>
+                            <input type="radio" class="btn-check" name="productColor" id="colorGreen" autocomplete="off"
+                                value="#00ff00">
+                            <label class="btn btn-outline-secondary border-2" for="colorGreen"
+                                style="background-color: #89df89; width: 40px; height: 40px; border-radius: 8px;"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="fs-5 my-3">
+                    <span class="text-decoration-line-through">$45.00</span>
+                    <span>$40.00</span>
+                </div>
+                <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium at dolorem
+                    quidem modi. Nam sequi consequatur obcaecati excepturi alias magni, accusamus eius blanditiis
+                    delectus ipsam minima ea iste laborum vero?</p>
+                <div class="d-flex">
+                    <button class="btn btn-outline-dark flex-shrink-0" type="button">
+                        <i class="bi-cart-fill me-1"></i>
+                        Adicionar ao carrinho
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Rate section -->
+<section class="py-5 bg-light">
+    <div class="container px-4 px-lg-5 mt-5">
+        <!-- Título e Botão de Avaliação -->
+        <div class="d-flex flex-column flex-md-row gap-3 gap-md-0 justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0">Avaliações</h2>
+            <div class="text-warning">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <button class="btn btn-outline-success">AVALIAR PRODUTO</button>
+        </div>
+        <!-- Porcentagem de recomendação -->
+        <div class="text-center mb-4">
+            <h4 class="fw-bold">80%</h4>
+            <p class="text-muted">dos respondentes recomendam esse produto.</p>
+        </div>
+        <!-- Avaliação Principal -->
+        <div class="border-start border-success border-3 p-3 mb-3 bg-white">
+            <p class="text-success fw-bold">AVALIAÇÃO POSITIVA MAIS ÚTIL</p>
+            <div class="d-flex justify-content-between align-items-center gap-3">
+                <div>
+                    <h6 class="mb-0">Rayane D.</h6>
+                    <small class="text-muted text-justify d-block">Perfume maravilhoso!! Fragrância sofisticada,
+                        exala muito e tem ótima projeção! A linha essencial é perfeita!!</small>
+                </div>
+                <small class="text-muted">03/06/2020</small>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+                <div class="text-warning">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <div>
+                    <span class="me-3"><i class="far fa-thumbs-up"></i> 2</span>
+                    <span><i class="far fa-thumbs-down"></i> 0</span>
+                </div>
+            </div>
+        </div>
+        <!-- Outras Avaliações -->
+        <hr>
+        <div class="bg-white p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center gap-3">
+                <div>
+                    <h6 class="mb-0">Ana R.</h6>
+                    <small class="text-muted text-justify">pra mim, ele é levemente adocicado, tem uma saída
+                        cítrica, porém essa saída é bem rápida e logo evolui pra um cheiro agradável e
+                        sofisticado</small>
+                </div>
+                <small class="text-muted">28/08/2024</small>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+                <div class="text-warning">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <div>
+                    <span class="me-3"><i class="far fa-thumbs-up"></i> 2</span>
+                    <span><i class="far fa-thumbs-down"></i> 0</span>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="bg-white p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center gap-3">
+                <div>
+                    <h6 class="mb-0">Adriana S.</h6>
+                    <small class="text-muted text-justify">O que falar desse perfume? Simplesmente maravilhoso
+                        💓!</small>
+                </div>
+                <small class="text-muted">26/08/2024</small>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+                <div class="text-warning">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <div>
+                    <span class="me-3"><i class="far fa-thumbs-up"></i> 2</span>
+                    <span><i class="far fa-thumbs-down"></i> 0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block js %}
+<script>
+    // Seletores principais
+    const mainImage = document.querySelector('.main-image');
+    const smallImages = document.querySelectorAll('.small-image');
+    const prevButton = document.querySelector('.carousel-control-prev');
+    const nextButton = document.querySelector('.carousel-control-next');
+
+    // Array de imagens
+    const images = [
+        "https://placehold.co/500x600?text=1",
+        "https://placehold.co/500x600?text=2",
+        "https://placehold.co/500x600?text=3",
+        "https://placehold.co/500x600?text=4",
+        "https://placehold.co/500x600?text=5"
+    ];
+
+    let currentIndex = 0;
+
+    // Atualiza a imagem principal e destaque da miniatura
+    const updateMainImage = (index) => {
+        mainImage.src = images[index];
+        currentIndex = index;
+
+        // Remove destaque das miniaturas
+        smallImages.forEach(img => img.classList.remove('active-thumbnail'));
+        // Adiciona destaque à miniatura atual
+        smallImages[index].classList.add('active-thumbnail');
+    };
+
+    // Clique nas miniaturas
+    smallImages.forEach((img, index) => {
+        img.addEventListener('click', () => updateMainImage(index));
+    });
+
+    // Controle "Anterior"
+    prevButton.addEventListener('click', () => {
+        const newIndex = (currentIndex - 1 + images.length) % images.length;
+        updateMainImage(newIndex);
+    });
+
+    // Controle "Próximo"
+    nextButton.addEventListener('click', () => {
+        const newIndex = (currentIndex + 1) % images.length;
+        updateMainImage(newIndex);
+    });
+
+    // Atualiza a miniatura ativa ao carregar
+    updateMainImage(currentIndex);
+</script>
+{% endblock js %}

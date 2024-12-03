@@ -1,0 +1,63 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Home{% endblock title %}
+
+{% block css %}
+<style>
+    .main-content-left {
+        font-size: 75px;
+    }
+
+    /* Em telas menores que md, o top é 175px */
+    @media (max-width: 768px) {
+        main {
+            top: 163px;
+        }
+
+        .main-content-left {
+            font-size: 50px;
+        }
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<!-- Main Content-->
+<main class="mb-5 pb-5">
+    <div class="container mt-5 py-5">
+        <div class="row mb-5 pb-5">
+            <div class="col-lg-6 d-flex flex-column align-items-center justify-content-center mb-5 pb-5 mb-lg-0">
+                <h1 class="text-white fw-bold h1 text-white main-content-left text-center text-lg-start">Compre mais,
+                    pague menos!</h1>
+                <p class="text-white text-center text-lg-start w-100">2 itens com 20% de desconto. 3 itens ou mais com
+                    30% de desconto</p>
+            </div>
+            <div class="col-lg-6 d-flex align-items-center justify-content-center">
+                <img src="https://placehold.co/500" alt="Placeholder Image" class="img-fluid">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-lg-3 mb-4">
+                <div class="card">
+                    <img src="https://placehold.co/200x200" class="card-img-top" alt="Placeholder Image">
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3 mb-4">
+                <div class="card">
+                    <img src="https://placehold.co/200x200" class="card-img-top" alt="Placeholder Image">
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3 mb-4">
+                <div class="card">
+                    <img src="https://placehold.co/200x200" class="card-img-top" alt="Placeholder Image">
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3 mb-4">
+                <div class="card">
+                    <img src="https://placehold.co/200x200" class="card-img-top" alt="Placeholder Image">
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock content %}
