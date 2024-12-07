@@ -72,7 +72,7 @@
                     {% for item in carrinho_items %}
                     <tr>
                         <th scope="row" class="d-flex flex-column flex-lg-row align-items-center gap-3">
-                            <img src="{{ item.produto.imagem_principal.url }}" alt="{{ item.produto.nome }}" class="img-fluid">
+                            <img src="{{ item.produto.imagem_principal.url }}" alt="{{ item.produto.nome }}" class="img-fluid" style="width: 50px; height: 50px;">
                             <small class="text-muted">{{ item.produto.nome }}</small>
                         </th>
                         <td scope="row" class="align-content-center">
