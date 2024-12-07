@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.http import HttpRequest
 from .models import (
-    Categoria, Marca, Produto, Cliente, Venda, ItemVenda, Pagamento,
+    Categoria, Marca, Produto, ImagemProduto, CustomUser, Venda, ItemVenda, Pagamento,
     EnderecoEntrega, Avaliacao, Comentario, Cupom, Carrinho, 
     ItemCarrinho, Desejo, ItemDesejo, Notificacao, Log
 )
@@ -28,18 +28,38 @@ class MarcaAdmin(BaseAdmin):
     prepopulated_fields = {'slug': ('nome',)}
 
 
+class ImagemProdutoInline(admin.TabularInline):
+    model = ImagemProduto
+    extra = 1
+
 @admin.register(Produto)
 class ProdutoAdmin(BaseAdmin):
     custom_list_display = ['nome', 'slug', 'marca', 'categoria', 'preco']
     search_fields = ['nome', 'slug', 'marca__nome', 'categoria__nome']
     list_filter = BaseAdmin.list_filter + ['marca', 'categoria']
     prepopulated_fields = {'slug': ('nome',)}
+    inlines = [ImagemProdutoInline]
+
+admin.site.register(ImagemProduto)
 
 
-@admin.register(Cliente)
-class ClienteAdmin(BaseAdmin):
-    custom_list_display = ['nome', 'email', 'cpf']
+@admin.register(CustomUser)
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ['id', 'username', 'first_name', 'last_name', 'email', 'cpf', 'is_active', 'is_staff', 'is_superuser', 'last_login', 'date_joined']
     search_fields = ['nome', 'email', 'cpf']
+    list_filter = ['is_staff', 'is_superuser', 'is_active']
+    readonly_fields = ['password']
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Informações pessoais', {'fields': ('first_name', 'last_name', 'email', 'cpf')}),
+        ('Permissões', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+        ('Datas importantes', {'fields': ('last_login', 'date_joined')}),
+    )
+    add_fieldsets = (
+        (None, {'fields': ('username', 'password1', 'password2') }),
+        ('Informações pessoais', {'fields': ('first_name', 'last_name', 'email', 'cpf')}),
+        ('Permissões', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+    )
 
 
 class ItemVendaInline(admin.TabularInline):
@@ -70,17 +90,17 @@ class EnderecoEntregaAdmin(BaseAdmin):
 
 
 @admin.register(Avaliacao)
-class AvaliacaoAdmin(BaseAdmin):
-    custom_list_display = ['produto', 'cliente', 'estrelas']
-    search_fields = ['cliente__nome', 'produto__nome', 'estrelas']
-    list_filter = BaseAdmin.list_filter + ['cliente', 'produto']
+class AvaliacaoAdmin(admin.ModelAdmin):
+    list_display = ['produto', 'cliente', 'estrelas', 'data']
+    search_fields = ['cliente__username', 'produto__nome']
+    list_filter = ['produto', 'cliente']
 
 
 @admin.register(Comentario)
-class ComentarioAdmin(BaseAdmin):
-    custom_list_display = ['avaliacao', 'texto']
-    search_fields = ['avaliacao__cliente__nome', 'avaliacao__produto__nome', 'texto']
-    list_filter = BaseAdmin.list_filter + ['avaliacao__cliente', 'avaliacao__produto']
+class ComentarioAdmin(admin.ModelAdmin):
+    list_display = ['avaliacao', 'texto', 'data']
+    search_fields = ['avaliacao__cliente__username', 'texto']
+    list_filter = ['avaliacao__produto', 'avaliacao__cliente']
 
 
 @admin.register(Cupom)

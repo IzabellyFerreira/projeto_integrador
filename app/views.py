@@ -1,12 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404   
 from django.views import View
 from .models import (
-    Categoria, Marca, Produto, Cliente, Venda, ItemVenda, Pagamento,
+    Categoria, Marca, Produto, CustomUser, Venda, ItemVenda, Pagamento,
     EnderecoEntrega, Avaliacao, Comentario, Cupom, Carrinho, 
     ItemCarrinho, Desejo, ItemDesejo, Notificacao, Log
 )
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
 
 ###############################################################################
@@ -21,12 +25,12 @@ class CustomLoginView(View):
         return render(request, self.page)
     
     def post(self, request):
-        email = request.POST['email']
-        password = request.POST['password']
-        user = authenticate(request, email=email, password=password)
+        username = request.POST.get('form-username')
+        password = request.POST.get('form-password')
+        user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return render(request, 'pages/index.html')
+            return redirect('index')
         else:
             return render(request, self.page, {'error': 'E-mail ou senha incorretos'})
         
@@ -44,14 +48,14 @@ class RegisterView(View):
         return render(request, self.page)
     
     def post(self, request):
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        confirm_password = request.POST['confirm_password']
+        username = request.POST.get('form-username')
+        email = request.POST.get('form-email')
+        password = request.POST.get('form-password')
+        confirm_password = request.POST.get('form-confirm-password')
         if password == confirm_password:
-            user = User.objects.create_user(username=username, email=email, password=password)
+            user = CustomUser.objects.create_user(username=username, email=email, password=password)
             user.save()
-            return render(request, 'pages/login.html')
+            return redirect('login')
         else:
             return render(request, self.page, {'error': 'Senhas não conferem'})
 
@@ -68,20 +72,89 @@ class IndexView(View):
 
 
 class ProductDetailView(View):
-    page = 'pages/product-detail.html'
+    template_name = 'pages/product-detail.html'
 
-    def get(self, request):
-        return render(request, self.page)
-    
-    def post(self, request):
-        pass
+    def get(self, request, slug):
+        produto = get_object_or_404(Produto, slug=slug)
+        avaliacoes = Avaliacao.objects.filter(produto=produto, ativo=True).order_by('-data')
+        comentarios = Comentario.objects.filter(avaliacao__in=avaliacoes)
+        print(comentarios)
+        context = {
+            'produto': produto,
+            'avaliacoes': avaliacoes,
+            'comentarios': comentarios,
+        }
+        return render(request, self.template_name, context)
+
+    @method_decorator(login_required)
+    def post(self, request, slug):
+        produto = get_object_or_404(Produto, slug=slug)
+        estrelas = int(request.POST.get('estrelas'))
+        comentario_texto = request.POST.get('comentario')
+        cliente = request.user
+
+        avaliacao = Avaliacao.objects.create(
+            produto=produto,
+            cliente=cliente,
+            estrelas=estrelas,
+            ativo=True
+        )
+        Comentario.objects.create(
+            avaliacao=avaliacao,
+            texto=comentario_texto
+        )
+        return redirect('product-detail', slug=slug)
 
 
+@method_decorator(login_required, name='dispatch')
 class CartView(View):
-    page = 'pages/sacola.html'
+    template_name = 'pages/sacola.html'
 
     def get(self, request):
-        return render(request, self.page)
-    
+        carrinho, created = Carrinho.objects.get_or_create(cliente=request.user)
+        carrinho_items = ItemCarrinho.objects.filter(carrinho=carrinho)
+        context = {'carrinho_items': carrinho_items}
+        return render(request, self.template_name, context)
+
     def post(self, request):
-        pass
+        pass  # Lógica para atualizar quantidades, se necessário
+
+
+@login_required
+def remove_from_cart(request, item_id):
+    item = get_object_or_404(ItemCarrinho, id=item_id, carrinho__cliente=request.user)
+    item.delete()
+    return redirect('cart')
+
+
+@login_required
+def finalize_purchase(request):
+    carrinho = get_object_or_404(Carrinho, cliente=request.user)
+    carrinho.itemcarrinho_set.all().delete()
+    return redirect('cart')
+
+
+@login_required
+def add_to_cart(request, slug):
+    try:
+        produto = get_object_or_404(Produto, slug=slug)
+        carrinho, created = Carrinho.objects.get_or_create(cliente=request.user)
+        item, created = ItemCarrinho.objects.get_or_create(
+            carrinho=carrinho,
+            produto=produto,
+            defaults={'quantidade': 1},
+        )
+        if not created:
+            item.quantidade += 1
+            item.save()
+        return redirect('cart')
+    except Exception as e:
+        print(e)
+        messages.error(request, 'Erro ao adicionar o produto ao carrinho.')
+        return redirect('product-detail', slug=slug)
+    
+
+# Class Based View responsável por renderizar uma página que lista
+# os produtos da categoria 'feminino'. A página fica no caminho pages/categorias/
+# o método get carrega todos os produtos pertencentes a esta categoria, o metodo
+# post recebe 'pass'

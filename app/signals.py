@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from .models import (
-    Categoria, Marca, Produto, Cliente, Venda, ItemVenda, Pagamento,
+    Categoria, Marca, Produto, CustomUser, Venda, ItemVenda, Pagamento,
     EnderecoEntrega, Avaliacao, Comentario, Cupom, Carrinho, 
     ItemCarrinho, Desejo, ItemDesejo, Notificacao, Log
 )
@@ -16,42 +16,41 @@ import inspect
 
 
 # Cria objetos padrão caso não existam
-@receiver(post_migrate)
-def create_default_objects(sender, **kwargs):
-    Categoria.create_default()
-    Marca.create_default()
-    Produto.create_default()
-    Cliente.create_default()
-    Venda.create_default()
-    ItemVenda.create_default()
-    Pagamento.create_default()
-    EnderecoEntrega.create_default()
-    Avaliacao.create_default()
-    Comentario.create_default()
-    Cupom.create_default()
-    Carrinho.create_default()
-    ItemCarrinho.create_default()
-    Desejo.create_default()
-    ItemDesejo.create_default()
-    Notificacao.create_default()
+# @receiver(post_migrate)
+# def create_default_objects(sender, **kwargs):
+#     Categoria.create_default()
+#     Marca.create_default()
+#     Produto.create_default()
+#     Venda.create_default()
+#     ItemVenda.create_default()
+#     Pagamento.create_default()
+#     EnderecoEntrega.create_default()
+#     Avaliacao.create_default()
+#     Comentario.create_default()
+#     Cupom.create_default()
+#     Carrinho.create_default()
+#     ItemCarrinho.create_default()
+#     Desejo.create_default()
+#     ItemDesejo.create_default()
+#     Notificacao.create_default()
 
 
 # Cria um usuário padrão caso não exista
-@receiver(post_migrate)
-def create_default_user(sender, **kwargs):
-    if not User.objects.exists():
-        User.objects.create_user(
-            username='defaultuser',
-            password='defaultpassword',
-            is_staff=False,
-            is_superuser=False,
-            is_active=False,
-        )
+# @receiver(post_migrate)
+# def create_default_user(sender, **kwargs):
+#     if not CustomUser.objects.exists():
+#         CustomUser.objects.create_user(
+#             username='defaultuser',
+#             password='defaultpassword',
+#             is_staff=False,
+#             is_superuser=False,
+#             is_active=False,
+#         )
 
 
 # Lista de modelos para monitorar alterações
 MONITORED_MODELS = [
-    Categoria, Marca, Produto, Cliente, Venda, ItemVenda, Pagamento,
+    Categoria, Marca, Produto, CustomUser, Venda, ItemVenda, Pagamento,
     EnderecoEntrega, Avaliacao, Comentario, Cupom, Carrinho, 
     ItemCarrinho, Desejo, ItemDesejo, Notificacao
 ]

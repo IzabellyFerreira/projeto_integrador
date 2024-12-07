@@ -43,12 +43,12 @@
                             class="rounded-circle custom-image-profile">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end text-small custom-dropdown-menu">
-                        <li><a class="dropdown-item custom-dropdown-item" href="#">Novo Projeto...</a></li>
-                        <li><a class="dropdown-item custom-dropdown-item" href="#">Configurações</a></li>
-                        <li><a class="dropdown-item custom-dropdown-item" href="#">Perfil</a></li>
+                        {% if user.is_staff %}
+                        <li><a class="dropdown-item custom-dropdown-item" href="{% url 'admin:index' %}">Administração</a></li>
                         <li>
                             <hr class="dropdown-divider custom-dropdown-divider">
                         </li>
+                        {% endif %}
                         <li><a class="dropdown-item custom-dropdown-item" href="{% url 'logout' %}">Sair</a></li>
                     </ul>
                 </div>
@@ -76,9 +76,6 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="#">Rosto</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Maquiagens</a>
                 </li>
             </ul>
         </div>

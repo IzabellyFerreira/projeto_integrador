@@ -1,1 +1,3 @@
-# projeto_integrador_iza
+# IzaBeauty
+
+Repositório de código dedicado ao Projeto Integrador "IzaBeauty", uma loja de cosméticos.

@@ -54,10 +54,10 @@
 {% endblock css %}
 
 {% block content %}
-<!-- Main Content-->
 <main class="mb-5 pb-5">
     <div class="container my-5">
         <h1 class="mb-5 text-white">Minha Sacola</h1>
+        {% if carrinho_items %}
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -69,141 +69,65 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for item in carrinho_items %}
                     <tr>
                         <th scope="row" class="d-flex flex-column flex-lg-row align-items-center gap-3">
-                            <img src="https://placehold.co/50" alt="Placeholder Image" class="img-fluid">
-                            <small class="text-muted">Creme Desodorante Nutritivo para o Corpo Framboesa e Pimenta Rosa Tododia</small>
+                            <img src="{{ item.produto.imagem_principal.url }}" alt="{{ item.produto.nome }}" class="img-fluid" onerror="this.onerror=null;this.src='https://placehold.co/50';">
+                            <small class="text-muted">{{ item.produto.nome }}</small>
                         </th>
                         <td scope="row" class="align-content-center">
                             <div class="counter-container">
                                 <div class="counter-button">-</div>
-                                <div class="counter-display">1</div>
+                                <div class="counter-display">{{ item.quantidade }}</div>
                                 <div class="counter-button">+</div>
                             </div>
                         </td>
                         <td scope="row">
                             <div>
-                                <small class="text-muted text-decoration-line-through">R$ 50.00</small>
-                                <div>R$ 40.00 <span class="text-success">(20% off)</span></div>
+                                {% if item.produto.preco_promocional %}
+                                <small class="text-muted text-decoration-line-through">R$ {{ item.produto.preco }}</small>
+                                <div>R$ {{ item.produto.preco_promocional }} <span class="text-success">(20% off)</span></div>
+                                {% else %}
+                                <div>R$ {{ item.produto.preco }}</div>
+                                {% endif %}
                             </div>
                         </td>
                         <td class="align-content-center">
-                            <i class="far fa-trash-alt"></i>
+                            <form method="post" action="{% url 'remove-from-cart' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link p-0">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
-                    <tr>
-                        <th scope="row" class="d-flex flex-column flex-lg-row align-items-center gap-3">
-                            <img src="https://placehold.co/50" alt="Placeholder Image" class="img-fluid">
-                            <small class="text-muted">Creme Desodorante Nutritivo para o Corpo Framboesa e Pimenta Rosa Tododia</small>
-                        </th>
-                        <td scope="row" class="align-content-center">
-                            <div class="counter-container">
-                                <div class="counter-button">-</div>
-                                <div class="counter-display">1</div>
-                                <div class="counter-button">+</div>
-                            </div>
-                        </td>
-                        <td scope="row">
-                            <div>
-                                <small class="text-muted text-decoration-line-through">R$ 50.00</small>
-                                <div>R$ 40.00 <span class="text-success">(20% off)</span></div>
-                            </div>
-                        </td>
-                        <td class="align-content-center">
-                            <i class="far fa-trash-alt"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="d-flex flex-column flex-lg-row align-items-center gap-3">
-                            <img src="https://placehold.co/50" alt="Placeholder Image" class="img-fluid">
-                            <small class="text-muted">Creme Desodorante Nutritivo para o Corpo Framboesa e Pimenta Rosa Tododia</small>
-                        </th>
-                        <td scope="row" class="align-content-center">
-                            <div class="counter-container">
-                                <div class="counter-button">-</div>
-                                <div class="counter-display">1</div>
-                                <div class="counter-button">+</div>
-                            </div>
-                        </td>
-                        <td scope="row">
-                            <div>
-                                <small class="text-muted text-decoration-line-through">R$ 50.00</small>
-                                <div>R$ 40.00 <span class="text-success">(20% off)</span></div>
-                            </div>
-                        </td>
-                        <td class="align-content-center">
-                            <i class="far fa-trash-alt"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="d-flex flex-column flex-lg-row align-items-center gap-3">
-                            <img src="https://placehold.co/50" alt="Placeholder Image" class="img-fluid">
-                            <small class="text-muted">Creme Desodorante Nutritivo para o Corpo Framboesa e Pimenta Rosa Tododia</small>
-                        </th>
-                        <td scope="row" class="align-content-center">
-                            <div class="counter-container">
-                                <div class="counter-button">-</div>
-                                <div class="counter-display">1</div>
-                                <div class="counter-button">+</div>
-                            </div>
-                        </td>
-                        <td scope="row">
-                            <div>
-                                <small class="text-muted text-decoration-line-through">R$ 50.00</small>
-                                <div>R$ 40.00 <span class="text-success">(20% off)</span></div>
-                            </div>
-                        </td>
-                        <td class="align-content-center">
-                            <i class="far fa-trash-alt"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="d-flex flex-column flex-lg-row align-items-center gap-3">
-                            <img src="https://placehold.co/50" alt="Placeholder Image" class="img-fluid">
-                            <small class="text-muted">Creme Desodorante Nutritivo para o Corpo Framboesa e Pimenta Rosa Tododia</small>
-                        </th>
-                        <td scope="row" class="align-content-center">
-                            <div class="counter-container">
-                                <div class="counter-button">-</div>
-                                <div class="counter-display">1</div>
-                                <div class="counter-button">+</div>
-                            </div>
-                        </td>
-                        <td scope="row">
-                            <div>
-                                <small class="text-muted text-decoration-line-through">R$ 50.00</small>
-                                <div>R$ 40.00 <span class="text-success">(20% off)</span></div>
-                            </div>
-                        </td>
-                        <td class="align-content-center">
-                            <i class="far fa-trash-alt"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="d-flex flex-column flex-lg-row align-items-center gap-3">
-                            <img src="https://placehold.co/50" alt="Placeholder Image" class="img-fluid">
-                            <small class="text-muted">Creme Desodorante Nutritivo para o Corpo Framboesa e Pimenta Rosa Tododia</small>
-                        </th>
-                        <td scope="row" class="align-content-center">
-                            <div class="counter-container">
-                                <div class="counter-button">-</div>
-                                <div class="counter-display">1</div>
-                                <div class="counter-button">+</div>
-                            </div>
-                        </td>
-                        <td scope="row">
-                            <div>
-                                <small class="text-muted text-decoration-line-through">R$ 50.00</small>
-                                <div>R$ 40.00 <span class="text-success">(20% off)</span></div>
-                            </div>
-                        </td>
-                        <td class="align-content-center">
-                            <i class="far fa-trash-alt"></i>
-                        </td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
+            <div class="text-end">
+                <button id="finalizarCompraBtn" class="btn btn-primary">Finalizar compra</button>
+            </div>
         </div>
+        {% else %}
+        <p class="text-white">Sua sacola está vazia.</p>
+        {% endif %}
     </div>
 </main>
 {% endblock content %}
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('finalizarCompraBtn').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Compra finalizada!',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{% url 'finalize-purchase' %}";
+            }
+        });
+    });
+</script>
+{% endblock js %}
