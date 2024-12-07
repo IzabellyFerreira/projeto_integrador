@@ -37,7 +37,7 @@
                         {% for imagem in produto.imagens.all %}
                         <img class="img-fluid small-image" src="{{ imagem.imagem.url }}"
                             alt="Imagem {{ forloop.counter }}" data-index="{{ forloop.counter0 }}"
-                            onerror="this.onerror=null;this.src='https://placehold.co/50?text=?';" />
+                            onerror="this.onerror=null;this.src='https://placehold.co/100x100?text=Imagem+não+encontrada';" />
                         {% endfor %}
                     </div>
                 </div>
@@ -56,9 +56,10 @@
                     </div>
                     <div class="position-relative">
                         <!-- Imagem principal do produto -->
-                        <img class="card-img-top mb-2 mb-md-0 main-image" src="{{ produto.imagem_principal.url }}"
+                        <img class="card-img-top mb-2 mb-md-0 main-image"
+                            src="{% if produto.imagem_principal %}{{ produto.imagem_principal.url }}{% else %}https://placehold.co/400x400?text=Imagem+não+encontrada{% endif %}"
                             alt="{{ produto.nome }}"
-                            onerror="this.onerror=null;this.src='https://placehold.co/50?text=?';" />
+                            onerror="this.onerror=null;this.src='https://placehold.co/400x400?text=Imagem+não+encontrada';" />
                         <!-- Controles do carrossel (estático por enquanto) -->
                         <button
                             class="btn btn-primary position-absolute top-50 start-0 translate-middle-y carousel-control-prev"
@@ -181,11 +182,11 @@
                     <h6 class="mb-0">{{ avaliacoes.0.cliente.username }}</h6>
                     <small class="text-muted text-justify d-block">
                         {% with comentario=avaliacoes.0.comentario_set.first %}
-                            {% if comentario %}
-                                {{ comentario.texto }}
-                            {% else %}
-                                Nenhum comentário.
-                            {% endif %}
+                        {% if comentario %}
+                        {{ comentario.texto }}
+                        {% else %}
+                        Nenhum comentário.
+                        {% endif %}
                         {% endwith %}
                     </small>
                 </div>
@@ -194,7 +195,7 @@
             <div class="d-flex justify-content-between mt-2">
                 <div class="text-warning">
                     {% for i in '12345'|make_list %}
-                        <i class="fa{% if forloop.counter <= avaliacoes.0.estrelas %}s{% else %}r{% endif %} fa-star"></i>
+                    <i class="fa{% if forloop.counter <= avaliacoes.0.estrelas %}s{% else %}r{% endif %} fa-star"></i>
                     {% endfor %}
                 </div>
                 <div>
@@ -249,40 +250,61 @@
     const prevButton = document.querySelector('.carousel-control-prev');
     const nextButton = document.querySelector('.carousel-control-next');
 
-    // Array de imagens
-    const images = Array.from(smallImages).map(img => img.src);
+    // Array de imagens com verificação de URL
+    const images = Array.from(smallImages)
+        .map(img => img.getAttribute('src'))
+        .filter(src => src && src !== 'undefined');
 
     let currentIndex = 0;
 
+    // Função para lidar com erros de carregamento de imagem
+    const handleImageError = (img) => {
+        img.onerror = null;  // Previne loop infinito
+        img.src = 'https://placehold.co/400x400?text=Imagem+não+encontrada';
+    };
+
     // Atualiza a imagem principal e destaque da miniatura
     const updateMainImage = (index) => {
-        mainImage.src = images[index];
+        if (images.length === 0) return;
+
+        const newSrc = images[index];
+        if (!newSrc) return;
+
+        mainImage.src = newSrc;
+        mainImage.onerror = () => handleImageError(mainImage);
         currentIndex = index;
 
         // Remove destaque das miniaturas
         smallImages.forEach(img => img.classList.remove('active-thumbnail'));
         // Adiciona destaque à miniatura atual
-        smallImages[index].classList.add('active-thumbnail');
+        if (smallImages[index]) {
+            smallImages[index].classList.add('active-thumbnail');
+        }
     };
 
     // Clique nas miniaturas
     smallImages.forEach((img, index) => {
+        img.onerror = () => handleImageError(img);
         img.addEventListener('click', () => updateMainImage(index));
     });
 
     // Controle "Anterior"
     prevButton.addEventListener('click', () => {
+        if (images.length === 0) return;
         const newIndex = (currentIndex - 1 + images.length) % images.length;
         updateMainImage(newIndex);
     });
 
     // Controle "Próximo"
     nextButton.addEventListener('click', () => {
+        if (images.length === 0) return;
         const newIndex = (currentIndex + 1) % images.length;
         updateMainImage(newIndex);
     });
 
     // Atualiza a miniatura ativa ao carregar
-    updateMainImage(currentIndex);
+    if (images.length > 0) {
+        updateMainImage(currentIndex);
+    }
 </script>
 {% endblock js %}

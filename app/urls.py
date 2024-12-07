@@ -11,7 +11,8 @@ from .views import (
     remove_from_cart,
     finalize_purchase,
     add_to_cart,
-    CategoriaListView
+    CategoriaListView,
+    health_check,
 )
 
 urlpatterns = [
@@ -25,6 +26,7 @@ urlpatterns = [
     path('sacola/finalizar/', finalize_purchase, name='finalize-purchase'),
     path('sacola/adicionar/<slug:slug>/', add_to_cart, name='add-to-cart'),
     path('categoria/<slug:categoria_slug>/', CategoriaListView.as_view(), name='lista-produtos'),
+    path('health/', health_check, name='health-check'),
 ]
 
 if settings.DEBUG:

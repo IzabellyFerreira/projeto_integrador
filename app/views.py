@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.http import JsonResponse
 
 
 ###############################################################################
@@ -168,3 +169,7 @@ class CategoriaListView(View):
             'produtos': produtos
         }
         return render(request, self.template_name, context)
+    
+
+def health_check(request):
+    return JsonResponse({"status": "healthy"})
