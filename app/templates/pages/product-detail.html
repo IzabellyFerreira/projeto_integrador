@@ -35,7 +35,9 @@
                     <div class="d-flex flex-row flex-lg-column justify-content-center justify-content-lg-start gap-2">
                         <!-- Imagens menores do produto -->
                         {% for imagem in produto.imagens.all %}
-                        <img class="img-fluid small-image" src="{{ imagem.imagem.url }}" alt="Imagem {{ forloop.counter }}" data-index="{{ forloop.counter0 }}" onerror="this.onerror=null;this.src='https://placehold.co/50?text=?';" />
+                        <img class="img-fluid small-image" src="{{ imagem.imagem.url }}"
+                            alt="Imagem {{ forloop.counter }}" data-index="{{ forloop.counter0 }}"
+                            onerror="this.onerror=null;this.src='https://placehold.co/50?text=?';" />
                         {% endfor %}
                     </div>
                 </div>
@@ -54,7 +56,9 @@
                     </div>
                     <div class="position-relative">
                         <!-- Imagem principal do produto -->
-                        <img class="card-img-top mb-2 mb-md-0 main-image" src="{{ produto.imagem_principal.url }}" alt="{{ produto.nome }}" onerror="this.onerror=null;this.src='https://placehold.co/50?text=?';" />
+                        <img class="card-img-top mb-2 mb-md-0 main-image" src="{{ produto.imagem_principal.url }}"
+                            alt="{{ produto.nome }}"
+                            onerror="this.onerror=null;this.src='https://placehold.co/50?text=?';" />
                         <!-- Controles do carrossel (estático por enquanto) -->
                         <button
                             class="btn btn-primary position-absolute top-50 start-0 translate-middle-y carousel-control-prev"
@@ -82,19 +86,14 @@
                     <div class="col">
                         <label class="form-label">Escolha uma opção:</label>
                         <div class="d-flex gap-2 border p-3" style="width: auto !important;">
-                            <!-- Botões de cor -->
-                            <input type="radio" class="btn-check" name="productColor" id="colorRed" autocomplete="off"
-                                value="#ff0000" checked>
-                            <label class="btn btn-outline-secondary border-2" for="colorRed"
-                                style="background-color: #ec7676; width: 40px; height: 40px; border-radius: 8px;"></label>
-                            <input type="radio" class="btn-check" name="productColor" id="colorBlue" autocomplete="off"
-                                value="#0000ff">
-                            <label class="btn btn-outline-secondary border-2" for="colorBlue"
-                                style="background-color: #6767e2; width: 40px; height: 40px; border-radius: 8px;"></label>
-                            <input type="radio" class="btn-check" name="productColor" id="colorGreen" autocomplete="off"
-                                value="#00ff00">
-                            <label class="btn btn-outline-secondary border-2" for="colorGreen"
-                                style="background-color: #89df89; width: 40px; height: 40px; border-radius: 8px;"></label>
+                            {% for n in '123'|make_list %}
+                            <input type="radio" class="btn-check" name="productOption" id="option{{n}}"
+                                autocomplete="off" value="{{n}}" {% if forloop.first %}checked{% endif %}>
+                            <label class="btn btn-outline-secondary border-2" for="option{{n}}"
+                                style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                                {{n}}
+                            </label>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -165,11 +164,12 @@
                 <i class="fas fa-star"></i>
                 <i class="fas fa-star"></i>
             </div>
-            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#avaliacaoModal">AVALIAR PRODUTO</button>
+            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#avaliacaoModal">AVALIAR
+                PRODUTO</button>
         </div>
         <!-- Porcentagem de recomendação -->
         <div class="text-center mb-4">
-            <h4 class="fw-bold">80%</h4>
+            <h4 class="fw-bold">{{ porcentagem_positivas }}%</h4>
             <p class="text-muted">dos respondentes recomendam esse produto.</p>
         </div>
         {% if avaliacoes %}
@@ -180,22 +180,22 @@
                 <div>
                     <h6 class="mb-0">{{ avaliacoes.0.cliente.username }}</h6>
                     <small class="text-muted text-justify d-block">
-                        {% if avaliacoes.0.comentario %}
-                            {{ avaliacoes.0.comentario.texto }}
-                        {% else %}
-                            Nenhum comentário.
-                        {% endif %}
+                        {% with comentario=avaliacoes.0.comentario_set.first %}
+                            {% if comentario %}
+                                {{ comentario.texto }}
+                            {% else %}
+                                Nenhum comentário.
+                            {% endif %}
+                        {% endwith %}
                     </small>
                 </div>
                 <small class="text-muted">{{ avaliacoes.0.data|date:"d/m/Y" }}</small>
             </div>
             <div class="d-flex justify-content-between mt-2">
                 <div class="text-warning">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
+                    {% for i in '12345'|make_list %}
+                        <i class="fa{% if forloop.counter <= avaliacoes.0.estrelas %}s{% else %}r{% endif %} fa-star"></i>
+                    {% endfor %}
                 </div>
                 <div>
                     <span class="me-3"><i class="far fa-thumbs-up"></i> {{ avaliacoes.0.likes }}</span>
@@ -210,22 +210,22 @@
                 <div>
                     <h6 class="mb-0">{{ avaliacao.cliente.username }}</h6>
                     <small class="text-muted text-justify">
-                        {% if avaliacao.comentario %}
-                            {{ avaliacao.comentario.texto }}
+                        {% with comentario=avaliacao.comentario_set.first %}
+                        {% if comentario %}
+                        {{ comentario.texto }}
                         {% else %}
-                            Nenhum comentário.
+                        Nenhum comentário.
                         {% endif %}
+                        {% endwith %}
                     </small>
                 </div>
                 <small class="text-muted">{{ avaliacao.data|date:"d/m/Y" }}</small>
             </div>
             <div class="d-flex justify-content-between mt-2">
                 <div class="text-warning">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
+                    {% for i in '12345'|make_list %}
+                    <i class="fa{% if forloop.counter <= avaliacao.estrelas %}s{% else %}r{% endif %} fa-star"></i>
+                    {% endfor %}
                 </div>
                 <div>
                     <span class="me-3"><i class="far fa-thumbs-up"></i> {{ avaliacao.likes }}</span>

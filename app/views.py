@@ -77,12 +77,16 @@ class ProductDetailView(View):
     def get(self, request, slug):
         produto = get_object_or_404(Produto, slug=slug)
         avaliacoes = Avaliacao.objects.filter(produto=produto, ativo=True).order_by('-data')
-        comentarios = Comentario.objects.filter(avaliacao__in=avaliacoes)
-        print(comentarios)
+        
+        # Calcula porcentagem de avaliações positivas (4 ou 5 estrelas)
+        total_avaliacoes = avaliacoes.count()
+        avaliacoes_positivas = avaliacoes.filter(estrelas__gte=4).count()
+        porcentagem_positivas = (avaliacoes_positivas / total_avaliacoes * 100) if total_avaliacoes > 0 else 0
+        
         context = {
             'produto': produto,
             'avaliacoes': avaliacoes,
-            'comentarios': comentarios,
+            'porcentagem_positivas': round(porcentagem_positivas)
         }
         return render(request, self.template_name, context)
 
@@ -106,8 +110,7 @@ class ProductDetailView(View):
         return redirect('product-detail', slug=slug)
 
 
-@method_decorator(login_required, name='dispatch')
-class CartView(View):
+class CartView(View, LoginRequiredMixin):
     template_name = 'pages/sacola.html'
 
     def get(self, request):
@@ -154,7 +157,14 @@ def add_to_cart(request, slug):
         return redirect('product-detail', slug=slug)
     
 
-# Class Based View responsável por renderizar uma página que lista
-# os produtos da categoria 'feminino'. A página fica no caminho pages/categorias/
-# o método get carrega todos os produtos pertencentes a esta categoria, o metodo
-# post recebe 'pass'
+class CategoriaListView(View):
+    template_name = 'pages/product-list.html'
+
+    def get(self, request, categoria_slug):
+        categoria = get_object_or_404(Categoria, slug=categoria_slug)
+        produtos = Produto.objects.filter(categoria=categoria)
+        context = {
+            'categoria': categoria,
+            'produtos': produtos
+        }
+        return render(request, self.template_name, context)

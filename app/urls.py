@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from .views import (
     IndexView,
     CustomLoginView,
@@ -9,6 +11,7 @@ from .views import (
     remove_from_cart,
     finalize_purchase,
     add_to_cart,
+    CategoriaListView
 )
 
 urlpatterns = [
@@ -21,4 +24,8 @@ urlpatterns = [
     path('sacola/remover/<int:item_id>/', remove_from_cart, name='remove-from-cart'),
     path('sacola/finalizar/', finalize_purchase, name='finalize-purchase'),
     path('sacola/adicionar/<slug:slug>/', add_to_cart, name='add-to-cart'),
+    path('categoria/<slug:categoria_slug>/', CategoriaListView.as_view(), name='lista-produtos'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
