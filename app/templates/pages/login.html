@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+
+    <style>
+        .gradient-custom-2 {
+            /* fallback for old browsers */
+            background: #fccb90;
+
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+        }
+
+        @media (min-width: 768px) {
+            .gradient-form {
+                height: 100vh !important;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .gradient-custom-2 {
+                border-top-right-radius: .3rem;
+                border-bottom-right-radius: .3rem;
+            }
+        }
+
+        .custom-login-btn {
+            border: none;
+            /* Remove a borda */
+            box-shadow: none;
+            /* Remove a sombra padrão */
+            text-transform: uppercase;
+            /* Transforma o texto em maiúsculas */
+            font-family: 'Roboto', sans-serif;
+            /* Altere para a fonte desejada */
+        }
+
+        .custom-login-btn:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            /* Adiciona uma leve sombra ao passar o mouse */
+        }
+    </style>
+</head>
+
+<body>
+    <section class="h-100 gradient-form" style="background-color: #e0e0e0;">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center">
+                <div class="col-12">
+                    <div class="card rounded-3">
+                        <div class="row g-0">
+                            <div class="col-lg-6">
+                                <div class="card-body p-md-5 mx-md-4">
+
+                                    <div class="text-center">
+                                        <img src="{% static 'images/logo-natura-4096.png' %}"
+                                            style="width: 150px;" alt="logo">
+                                        <h4 class="mt-1 mb-5 pb-1">Bem vindo a IZABEAUTY</h4>
+                                    </div>
+
+                                    <form method="post" action="{% url 'login' %}">
+                                        {% csrf_token %}
+                                        <p>Faça login na sua conta.</p>
+                                    
+                                        <div data-mdb-input-init class="form-outline mb-4">
+                                            <input type="text" id="form-username" name="form-username" class="form-control"
+                                                placeholder="Insira seu usuário" required />
+                                            <div class="form-notch">
+                                                <div class="form-notch-leading" style="width: 9px;"></div>
+                                                <div class="form-notch-middle" style="width: 66.4px;"></div>
+                                                <div class="form-notch-trailing"></div>
+                                            </div>
+                                        </div>
+                                    
+                                        <div data-mdb-input-init class="form-outline mb-4">
+                                            <input type="password" id="form-password" name="form-password" class="form-control"
+                                                placeholder="Insira sua senha" required />
+                                            <div class="form-notch">
+                                                <div class="form-notch-leading" style="width: 9px;"></div>
+                                                <div class="form-notch-middle" style="width: 64px;"></div>
+                                                <div class="form-notch-trailing"></div>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="text-center pt-1 mb-5 pb-1">
+                                            <button
+                                                class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3 w-100 rounded-0 custom-login-btn"
+                                                type="submit">Entrar</button>
+                                        </div>
+                                    
+                                        <div class="d-flex align-items-center justify-content-center pb-4">
+                                            <p class="mb-0 me-2">Ainda não possui uma conta?</p>
+                                            <button type="button" class="btn btn-outline-danger"
+                                                onclick="redirectToRegister()">Registrar-se</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                                    <h4 class="mb-4">Somos mais que uma loja!</h4>
+                                    <p class="small mb-0">Bem-vindo de volta! Faça login na sua conta para acessar a melhor experiência de compras em nossa loja de produtos de beleza. Insira seu usuario e senha para continuar.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <!-- Custom JS -->
+    <script src="{% static 'js/global.js' %}"></script>
+
+    <script>
+        function redirectToRegister() {
+            window.location.href = "{% url 'register' %}";
+        }
+    </script>
+    </script>
+</body>
+
+</html>

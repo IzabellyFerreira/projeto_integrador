@@ -1,0 +1,133 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Minha Sacola{% endblock title %}
+
+{% block css %}
+<style>
+    .table-header>td,
+    .table-header>th {
+        background-color: #f5f3f3 !important; /* Mesma cor de fundo para células individuais */
+    }
+
+    .counter-container {
+        display: flex;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+        width: 100px;
+        height: 30px;
+    }
+
+    .counter-button,
+    .counter-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        border-right: 1px solid #ccc;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        background-color: #f9f9f9;
+    }
+
+    .counter-button:last-child {
+        border-right: none;
+    }
+
+    .counter-button {
+        cursor: pointer;
+    }
+
+    /* Em telas menores que md, o top é 175px */
+    @media (max-width: 768px) {
+        main {
+            top: 163px;
+        }
+    }
+
+    @media (max-width: 675px) {
+        .table-column-product {
+            width: 25%;
+        }
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<main class="mb-5 pb-5">
+    <div class="container my-5">
+        <h1 class="mb-4 text-white">Minha Sacola</h1>
+        {% if carrinho_items %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr class="table-header">
+                        <th scope="col" class="table-column-product">Produto</th>
+                        <th scope="col" class="table-column-quantity">Quantidade</th>
+                        <th scope="col" class="table-column-price">Valor</th>
+                        <th scope="col" class="table-column-icon"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in carrinho_items %}
+                    <tr>
+                        <th scope="row" class="d-flex flex-column flex-lg-row align-items-center gap-3">
+                            <img src="{{ item.produto.imagem_principal.url }}" alt="{{ item.produto.nome }}" class="img-fluid" style="width: 50px; height: 50px;">
+                            <small class="text-muted">{{ item.produto.nome }}</small>
+                        </th>
+                        <td scope="row" class="align-content-center">
+                            <div class="counter-container">
+                                <div class="counter-button">-</div>
+                                <div class="counter-display">{{ item.quantidade }}</div>
+                                <div class="counter-button">+</div>
+                            </div>
+                        </td>
+                        <td scope="row">
+                            <div>
+                                {% if item.produto.preco_promocional %}
+                                <small class="text-muted text-decoration-line-through">R$ {{ item.produto.preco }}</small>
+                                <div>R$ {{ item.produto.preco_promocional }} <span class="text-success">(20% off)</span></div>
+                                {% else %}
+                                <div>R$ {{ item.produto.preco }}</div>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="align-content-center">
+                            <form method="post" action="{% url 'remove-from-cart' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link p-0">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-end">
+                <button id="finalizarCompraBtn" class="btn btn-success">Finalizar compra</button>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-center text-white">Sua sacola está vazia!</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock content %}
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('finalizarCompraBtn').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Compra finalizada!',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{% url 'finalize-purchase' %}";
+            }
+        });
+    });
+</script>
+{% endblock js %}

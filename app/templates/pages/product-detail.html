@@ -1,0 +1,310 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Minha Sacola{% endblock title %}
+
+{% block css %}
+<style>
+    /* Aplica um estilo específico ao botão selecionado */
+    .btn-check:checked+.btn-outline-secondary {
+        border-color: black;
+        /* Borda preta para destacar a seleção */
+        border-width: 3px;
+        /* Aumenta a espessura da borda */
+    }
+
+    .active-thumbnail {
+        border-left: 2px solid #007bff;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        background-color: #007bff;
+        color: #000;
+        margin: 0 10px;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<!-- Product section-->
+<section class="mt-5 py-5">
+    <div class="container px-4 px-lg-5 my-5 pt-5">
+        <div class="row gx-4 gx-lg-5 align-items-start">
+            <div class="col-lg-6 d-flex flex-column-reverse flex-lg-row gap-3 gap-lg-5 pb-5 pb-lg-0">
+                <div class="col-lg-2">
+                    <div class="d-flex flex-row flex-lg-column justify-content-center justify-content-lg-start gap-2">
+                        <!-- Imagens menores do produto -->
+                        {% for imagem in produto.imagens.all %}
+                        <img class="img-fluid small-image" src="{{ imagem.imagem.url }}"
+                            alt="Imagem {{ forloop.counter }}" data-index="{{ forloop.counter0 }}"
+                            onerror="this.onerror=null;this.src='https://placehold.co/100x100?text=Imagem+não+encontrada';" />
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-lg-10">
+                    <!-- Badge e avaliações -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="badge bg-danger">Lançamento</span>
+                        <!-- Avaliações (estático por enquanto) -->
+                        <div class="text-warning border border-danger p-2 rounded-pill">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="position-relative">
+                        <!-- Imagem principal do produto -->
+                        <img class="card-img-top mb-2 mb-md-0 main-image"
+                            src="{% if produto.imagem_principal %}{{ produto.imagem_principal.url }}{% else %}https://placehold.co/400x400?text=Imagem+não+encontrada{% endif %}"
+                            alt="{{ produto.nome }}"
+                            onerror="this.onerror=null;this.src='https://placehold.co/400x400?text=Imagem+não+encontrada';" />
+                        <!-- Controles do carrossel (estático por enquanto) -->
+                        <button
+                            class="btn btn-primary position-absolute top-50 start-0 translate-middle-y carousel-control-prev"
+                            style="z-index: 10; border-radius: 50%; width: 40px; height: 40px;">&#10094;</button>
+                        <button
+                            class="btn btn-primary position-absolute top-50 end-0 translate-middle-y carousel-control-next"
+                            style="z-index: 10; border-radius: 50%; width: 40px; height: 40px;">&#10095;</button>
+                    </div>
+                </div>
+                <p class="lead d-block d-lg-none">{{ produto.marca.nome }}</p>
+                <div class="d-flex justify-content-between d-block d-lg-none">
+                    <h1 class="display-6 fw-bolder">{{ produto.nome }}</h1>
+                    <i class="far fa-heart align-self-start fs-4"></i>
+                </div>
+            </div>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-5">
+                <!-- Informações adicionais -->
+                <div class="d-flex justify-content-between d-none d-lg-block">
+                    <h1 class="fw-bolder">{{ produto.nome }}</h1>
+                    <i class="far fa-heart align-self-start fs-4"></i>
+                </div>
+                <p class="lead d-none d-lg-block">{{ produto.marca.nome }}</p>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label">Escolha uma opção:</label>
+                        <div class="d-flex gap-2 border p-3" style="width: auto !important;">
+                            {% for n in '123'|make_list %}
+                            <input type="radio" class="btn-check" name="productOption" id="option{{n}}"
+                                autocomplete="off" value="{{n}}" {% if forloop.first %}checked{% endif %}>
+                            <label class="btn btn-outline-secondary border-2" for="option{{n}}"
+                                style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                                {{n}}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="fs-5 my-3">
+                    {% if produto.preco_promocional %}
+                    <span class="text-decoration-line-through">R$ {{ produto.preco }}</span>
+                    <span>R$ {{ produto.preco_promocional }}</span>
+                    {% else %}
+                    <span>R$ {{ produto.preco }}</span>
+                    {% endif %}
+                </div>
+                <p class="lead">{{ produto.descricao }}</p>
+                <div class="d-flex">
+                    <form method="post" action="{% url 'add-to-cart' produto.slug %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-dark">Adicionar à Sacola</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal de avaliação -->
+<div class="modal fade" id="avaliacaoModal" tabindex="-1" aria-labelledby="avaliacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="avaliacaoModalLabel">Avaliar Produto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="estrelas" class="form-label">Avaliação:</label>
+                        <select class="form-select" id="estrelas" name="estrelas" required>
+                            <option value="5">5 estrelas</option>
+                            <option value="4">4 estrelas</option>
+                            <option value="3">3 estrelas</option>
+                            <option value="2">2 estrelas</option>
+                            <option value="1">1 estrela</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comentario" class="form-label">Comentário:</label>
+                        <textarea class="form-control" id="comentario" name="comentario" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Enviar Avaliação</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Seção de avaliações -->
+<section class="py-5 bg-light">
+    <div class="container px-4 px-lg-5 mt-5">
+        <!-- Título e Botão de Avaliação -->
+        <div class="d-flex flex-column flex-md-row gap-3 gap-md-0 justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0">Avaliações</h2>
+            <div class="text-warning">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#avaliacaoModal">AVALIAR
+                PRODUTO</button>
+        </div>
+        <!-- Porcentagem de recomendação -->
+        <div class="text-center mb-4">
+            <h4 class="fw-bold">{{ porcentagem_positivas }}%</h4>
+            <p class="text-muted">dos respondentes recomendam esse produto.</p>
+        </div>
+        {% if avaliacoes %}
+        <!-- Avaliação mais útil -->
+        <div class="border-start border-success border-3 p-3 mb-3 bg-white">
+            <p class="text-success fw-bold">AVALIAÇÃO POSITIVA MAIS ÚTIL</p>
+            <div class="d-flex justify-content-between align-items-center gap-3">
+                <div>
+                    <h6 class="mb-0">{{ avaliacoes.0.cliente.username }}</h6>
+                    <small class="text-muted text-justify d-block">
+                        {% with comentario=avaliacoes.0.comentario_set.first %}
+                        {% if comentario %}
+                        {{ comentario.texto }}
+                        {% else %}
+                        Nenhum comentário.
+                        {% endif %}
+                        {% endwith %}
+                    </small>
+                </div>
+                <small class="text-muted">{{ avaliacoes.0.data|date:"d/m/Y" }}</small>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+                <div class="text-warning">
+                    {% for i in '12345'|make_list %}
+                    <i class="fa{% if forloop.counter <= avaliacoes.0.estrelas %}s{% else %}r{% endif %} fa-star"></i>
+                    {% endfor %}
+                </div>
+                <div>
+                    <span class="me-3"><i class="far fa-thumbs-up"></i> {{ avaliacoes.0.likes }}</span>
+                    <span><i class="far fa-thumbs-down"></i> {{ avaliacoes.0.dislikes }}</span>
+                </div>
+            </div>
+        </div>
+        <!-- Outras avaliações -->
+        {% for avaliacao in avaliacoes|slice:"1:" %}
+        <div class="bg-white p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center gap-3">
+                <div>
+                    <h6 class="mb-0">{{ avaliacao.cliente.username }}</h6>
+                    <small class="text-muted text-justify">
+                        {% with comentario=avaliacao.comentario_set.first %}
+                        {% if comentario %}
+                        {{ comentario.texto }}
+                        {% else %}
+                        Nenhum comentário.
+                        {% endif %}
+                        {% endwith %}
+                    </small>
+                </div>
+                <small class="text-muted">{{ avaliacao.data|date:"d/m/Y" }}</small>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+                <div class="text-warning">
+                    {% for i in '12345'|make_list %}
+                    <i class="fa{% if forloop.counter <= avaliacao.estrelas %}s{% else %}r{% endif %} fa-star"></i>
+                    {% endfor %}
+                </div>
+                <div>
+                    <span class="me-3"><i class="far fa-thumbs-up"></i> {{ avaliacao.likes }}</span>
+                    <span><i class="far fa-thumbs-down"></i> {{ avaliacao.dislikes }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>Nenhuma avaliação disponível.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock content %}
+
+{% block js %}
+<script>
+    // Seletores principais
+    const mainImage = document.querySelector('.main-image');
+    const smallImages = document.querySelectorAll('.small-image');
+    const prevButton = document.querySelector('.carousel-control-prev');
+    const nextButton = document.querySelector('.carousel-control-next');
+
+    // Array de imagens com verificação de URL
+    const images = Array.from(smallImages)
+        .map(img => img.getAttribute('src'))
+        .filter(src => src && src !== 'undefined');
+
+    let currentIndex = 0;
+
+    // Função para lidar com erros de carregamento de imagem
+    const handleImageError = (img) => {
+        img.onerror = null;  // Previne loop infinito
+        img.src = 'https://placehold.co/400x400?text=Imagem+não+encontrada';
+    };
+
+    // Atualiza a imagem principal e destaque da miniatura
+    const updateMainImage = (index) => {
+        if (images.length === 0) return;
+
+        const newSrc = images[index];
+        if (!newSrc) return;
+
+        mainImage.src = newSrc;
+        mainImage.onerror = () => handleImageError(mainImage);
+        currentIndex = index;
+
+        // Remove destaque das miniaturas
+        smallImages.forEach(img => img.classList.remove('active-thumbnail'));
+        // Adiciona destaque à miniatura atual
+        if (smallImages[index]) {
+            smallImages[index].classList.add('active-thumbnail');
+        }
+    };
+
+    // Clique nas miniaturas
+    smallImages.forEach((img, index) => {
+        img.onerror = () => handleImageError(img);
+        img.addEventListener('click', () => updateMainImage(index));
+    });
+
+    // Controle "Anterior"
+    prevButton.addEventListener('click', () => {
+        if (images.length === 0) return;
+        const newIndex = (currentIndex - 1 + images.length) % images.length;
+        updateMainImage(newIndex);
+    });
+
+    // Controle "Próximo"
+    nextButton.addEventListener('click', () => {
+        if (images.length === 0) return;
+        const newIndex = (currentIndex + 1) % images.length;
+        updateMainImage(newIndex);
+    });
+
+    // Atualiza a miniatura ativa ao carregar
+    if (images.length > 0) {
+        updateMainImage(currentIndex);
+    }
+</script>
+{% endblock js %}

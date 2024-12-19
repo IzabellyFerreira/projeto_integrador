@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    flex-shrink: 0;
+}
+
+nav {
+    background-color: #3724c4;
+    color: white;
+}
+
+.logo {
+    width: 50px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+/* Remover as bordas laterais e superior, deixando apenas a inferior */
+.custom-search {
+    border: none;
+    /* Borda inferior leve */
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.3);
+
+    /* Fundo transparente */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* placeholder do campo de pesquisa */
+.custom-search::placeholder {
+    color: #fff;
+    /* Cor do placeholder */
+}
+
+/* X no campo de pesquisa para limpar o conteúdo */
+.custom-search::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* A cor do cursor e do texto no campo de pesquisa deve ser branca */
+.custom-search,
+.custom-search:focus {
+    color: #fff;
+    /* Cor do texto */
+    cursor: text;
+    /* Cursor de texto */
+}
+
+/* Estilo de foco no campo de pesquisa */
+.custom-search:hover,
+.custom-search:focus {
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Cor da borda no foco */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    /* Efeito de sombra no foco */
+    outline: none;
+}
+
+/* Estilo do botão de pesquisa */
+.search-button {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0;
+    transition: right 0.3s ease;
+    /* Animação suave para deslocamento */
+}
+
+/* Estilo do ícone de pesquisa quando o campo está em foco e quando passo o mouse por cima do campo */
+.custom-search:hover~.search-button,
+.custom-search:focus~.search-button {
+    color: #fff;
+}
+
+/* Remove o outline do botão ao focar */
+.search-button:focus {
+    outline: none;
+}
+
+/* Estiliza a div do campo de pesquisa para permitir posicionamento do botão */
+.search-container {
+    position: relative;
+    width: 100%;
+}
+
+/* Aplica um estilo específico ao botão selecionado */
+.btn-check:checked+.btn-outline-secondary {
+    border-color: black;
+    /* Borda preta para destacar a seleção */
+    border-width: 3px;
+    /* Aumenta a espessura da borda */
+}
+
+main {
+    flex-grow: 1;
+    position: relative;
+    top: 123px;
+    margin-bottom: 5rem;
+    background-color: #4a3dd1;
+}
+
+footer {
+    flex-shrink: 0;
+    position: relative;
+    bottom: 0;
+    background-color: #3724c4;
+}
